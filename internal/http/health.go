@@ -19,6 +19,13 @@ func (h *HealthHandler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /health", h.Get)
 }
 
+// Get godoc
+// @Summary Health check
+// @Description Check if the API is running.
+// @Tags health
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Router /health [get]
 func (h *HealthHandler) Get(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, map[string]string{"status": "ok"})
 }

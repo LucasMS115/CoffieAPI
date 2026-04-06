@@ -25,6 +25,17 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 	// GET  /api/users/{id}/stats
 }
 
+// Register godoc
+// @Summary Register a new user
+// @Description Create a new user account with name and email.
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body RegisterUser true "User registration"
+// @Success 201 {object} UserResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /api/users [post]
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	// Parse request body
 	var req RegisterUser

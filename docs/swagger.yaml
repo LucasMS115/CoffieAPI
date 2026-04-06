@@ -1,0 +1,93 @@
+basePath: /
+definitions:
+  coffie_internal_http_response.ErrorResponse:
+    properties:
+      error_code:
+        type: string
+      fields:
+        items:
+          $ref: '#/definitions/coffie_internal_http_response.FieldError'
+        type: array
+      message:
+        type: string
+    type: object
+  coffie_internal_http_response.FieldError:
+    properties:
+      field:
+        type: string
+      message:
+        type: string
+    type: object
+  internal_feature_user_http.RegisterUser:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+    type: object
+  internal_feature_user_http.UserResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: REST API for managing coffee recipes.
+  title: Coffee API
+  version: "1.0"
+paths:
+  /api/users:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account with name and email.
+      parameters:
+      - description: User registration
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_feature_user_http.RegisterUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/internal_feature_user_http.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/coffie_internal_http_response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/coffie_internal_http_response.ErrorResponse'
+      summary: Register a new user
+      tags:
+      - users
+  /health:
+    get:
+      description: Check if the API is running.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - health
+schemes:
+- http
+swagger: "2.0"

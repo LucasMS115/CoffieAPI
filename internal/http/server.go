@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"net/http"
 
+	httpSwagger "github.com/swaggo/http-swagger"
+
 	"coffie/internal/feature/user/domain"
 	userhttp "coffie/internal/feature/user/http"
 	"coffie/internal/feature/user/store"
@@ -12,6 +14,9 @@ import (
 // NewServer creates and configures the HTTP server with all routes.
 func NewServer(addr string, db *sql.DB) *http.Server {
 	mux := http.NewServeMux()
+
+	// Swagger documentation
+	mux.HandleFunc("GET /swagger/", httpSwagger.WrapHandler)
 
 	healthHandler := NewHealthHandler()
 	healthHandler.RegisterRoutes(mux)
