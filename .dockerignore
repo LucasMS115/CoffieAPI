@@ -1,0 +1,9 @@
+vendor/
+.git/
+.idea/
+.vscode/
+*.swp
+*.swo
+.env
+.env.*
+!env.example
