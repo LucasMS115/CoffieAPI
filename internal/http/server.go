@@ -12,22 +12,22 @@ import (
 )
 
 // NewServer creates and configures the HTTP server with all routes.
-func NewServer(addr string, db *sql.DB) *http.Server {
-	mux := http.NewServeMux()
+func NewServer(address string, databaseConnection *sql.DB) *http.Server {
+	serveMux := http.NewServeMux()
 
 	// Swagger documentation
-	mux.HandleFunc("GET /swagger/", httpSwagger.WrapHandler)
+	serveMux.HandleFunc("GET /swagger/", httpSwagger.WrapHandler)
 
 	healthHandler := NewHealthHandler()
-	healthHandler.RegisterRoutes(mux)
+	healthHandler.RegisterRoutes(serveMux)
 
-	userStore := store.NewUserStore(db)
+	userStore := store.NewUserStore(databaseConnection)
 	userService := domain.NewService(userStore)
 	userHandler := userhttp.NewHandler(userService)
-	userHandler.RegisterRoutes(mux)
+	userHandler.RegisterRoutes(serveMux)
 
 	return &http.Server{
-		Addr:    addr,
-		Handler: mux,
+		Addr:    address,
+		Handler: serveMux,
 	}
 }

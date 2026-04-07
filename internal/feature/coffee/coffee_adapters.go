@@ -6,11 +6,13 @@ import (
 )
 
 // ToCreateCoffeeRequest converts an HTTP request to a domain service request.
-func ToCreateCoffeeRequest(req *http.CreateCoffee) domain.CreateCoffeeRequest {
+func ToCreateCoffeeRequest(createCoffeeRequest *http.CreateCoffee) domain.CreateCoffeeRequest {
+	_ = createCoffeeRequest
 	return domain.CreateCoffeeRequest{}
 }
 
 // ToCoffeeResponse converts a domain Coffee to an HTTP response.
-func ToCoffeeResponse(c *domain.Coffee) *http.CoffeeResponse {
+func ToCoffeeResponse(coffee *domain.Coffee) *http.CoffeeResponse {
+	_ = coffee
 	return &http.CoffeeResponse{}
 }

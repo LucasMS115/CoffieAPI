@@ -6,10 +6,10 @@ import (
 )
 
 // JSON writes a JSON response with the given status code.
-func JSON(w http.ResponseWriter, status int, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(data)
+func JSON(responseWriter http.ResponseWriter, status int, data interface{}) {
+	responseWriter.Header().Set("Content-Type", "application/json")
+	responseWriter.WriteHeader(status)
+	json.NewEncoder(responseWriter).Encode(data)
 }
 
 // ErrorResponse represents a standardized error payload.
@@ -26,8 +26,8 @@ type FieldError struct {
 }
 
 // Error writes a JSON error response.
-func Error(w http.ResponseWriter, status int, code, message string, fields []FieldError) {
-	JSON(w, status, ErrorResponse{
+func Error(responseWriter http.ResponseWriter, status int, code, message string, fields []FieldError) {
+	JSON(responseWriter, status, ErrorResponse{
 		ErrorCode: code,
 		Message:   message,
 		Fields:    fields,

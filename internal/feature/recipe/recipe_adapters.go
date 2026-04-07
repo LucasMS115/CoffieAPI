@@ -6,21 +6,25 @@ import (
 )
 
 // ToCreateRecipeRequest converts an HTTP request to a domain service request.
-func ToCreateRecipeRequest(req *http.CreateRecipe) domain.CreateRecipeRequest {
+func ToCreateRecipeRequest(createRecipeRequest *http.CreateRecipe) domain.CreateRecipeRequest {
+	_ = createRecipeRequest
 	return domain.CreateRecipeRequest{}
 }
 
 // ToUpdateRecipeRequest converts an HTTP update request to a domain service request.
-func ToUpdateRecipeRequest(req *http.UpdateRecipe) domain.UpdateRecipeRequest {
+func ToUpdateRecipeRequest(updateRecipeRequest *http.UpdateRecipe) domain.UpdateRecipeRequest {
+	_ = updateRecipeRequest
 	return domain.UpdateRecipeRequest{}
 }
 
 // ToRecipeResponse converts a detailed domain recipe to an HTTP response.
-func ToRecipeResponse(r *domain.RecipeWithDetails) *http.RecipeResponse {
+func ToRecipeResponse(recipeWithDetails *domain.RecipeWithDetails) *http.RecipeResponse {
+	_ = recipeWithDetails
 	return &http.RecipeResponse{}
 }
 
 // ToRecipeListItemResponse converts a recipe summary to an HTTP list item response.
-func ToRecipeListItemResponse(r *domain.RecipeSummary) *http.RecipeListItem {
+func ToRecipeListItemResponse(recipeSummary *domain.RecipeSummary) *http.RecipeListItem {
+	_ = recipeSummary
 	return &http.RecipeListItem{}
 }

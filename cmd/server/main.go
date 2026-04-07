@@ -32,15 +32,15 @@ func main() {
 		databaseURL = "postgres://coffie:coffie_pass@localhost:5432/coffie_dev?sslmode=disable"
 	}
 
-	db, err := openDB(databaseURL)
-	if err != nil {
-		log.Fatalf("failed to open database: %v", err)
+	databaseConnection, openDatabaseError := openDatabase(databaseURL)
+	if openDatabaseError != nil {
+		log.Fatalf("failed to open database: %v", openDatabaseError)
 	}
-	defer db.Close()
+	defer databaseConnection.Close()
 
 	fmt.Printf("connected to database\n")
 
-	server := apphttp.NewServer(":"+port, db)
+	server := apphttp.NewServer(":"+port, databaseConnection)
 
 	fmt.Printf("server starting on port %s\n", port)
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
@@ -48,13 +48,13 @@ func main() {
 	}
 }
 
-func openDB(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("postgres", dsn)
-	if err != nil {
-		return nil, err
+func openDatabase(dataSourceName string) (*sql.DB, error) {
+	databaseConnection, openError := sql.Open("postgres", dataSourceName)
+	if openError != nil {
+		return nil, openError
 	}
-	if err := db.Ping(); err != nil {
-		return nil, err
+	if pingError := databaseConnection.Ping(); pingError != nil {
+		return nil, pingError
 	}
-	return db, nil
+	return databaseConnection, nil
 }

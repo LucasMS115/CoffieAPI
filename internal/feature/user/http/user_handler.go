@@ -37,7 +37,7 @@ func (handler *Handler) RegisterRoutes(serveMux *http.ServeMux) {
 func (handler *Handler) Register(responseWriter http.ResponseWriter, request *http.Request) {
 	// Parse request body
 	var registerRequest RegisterUser
-	if err := json.NewDecoder(request.Body).Decode(&registerRequest); err != nil {
+	if decodeError := json.NewDecoder(request.Body).Decode(&registerRequest); decodeError != nil {
 		response.Error(responseWriter, http.StatusBadRequest, "INVALID_INPUT", "invalid request body", nil)
 		return
 	}
@@ -53,8 +53,8 @@ func (handler *Handler) Register(responseWriter http.ResponseWriter, request *ht
 	serviceRequest := toRegisterRequest(&registerRequest)
 
 	// Delegate to service
-	createdUser, err := handler.userService.Register(request.Context(), serviceRequest)
-	if err != nil {
+	createdUser, registerError := handler.userService.Register(request.Context(), serviceRequest)
+	if registerError != nil {
 		response.Error(responseWriter, http.StatusInternalServerError, "INTERNAL_ERROR", "could not create user", nil)
 		return
 	}

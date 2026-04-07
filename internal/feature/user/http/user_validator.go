@@ -2,6 +2,7 @@ package http
 
 import "coffie/internal/http/response"
 
+// ValidateRegisterUserRequest validates the payload for user creation.
 func ValidateRegisterUserRequest(registerRequest *RegisterUser) []response.FieldError {
 	validationErrors := []response.FieldError{}
 

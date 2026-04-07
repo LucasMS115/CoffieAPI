@@ -2,28 +2,38 @@ package store
 
 import (
 	"context"
-	"coffie/internal/feature/coffee/domain"
 	"database/sql"
+
+	"coffie/internal/feature/coffee/domain"
 )
 
 // PostgresCoffeeStore implements domain.CoffeeStore using PostgreSQL.
 type PostgresCoffeeStore struct {
-	db *sql.DB
+	databaseConnection *sql.DB
 }
 
 // NewCoffeeStore creates a new Postgres-backed coffee store.
-func NewCoffeeStore(db *sql.DB) *PostgresCoffeeStore {
-	return &PostgresCoffeeStore{db: db}
+func NewCoffeeStore(databaseConnection *sql.DB) *PostgresCoffeeStore {
+	return &PostgresCoffeeStore{databaseConnection: databaseConnection}
 }
 
-func (s *PostgresCoffeeStore) Create(ctx context.Context, c *domain.Coffee) error {
+func (postgresCoffeeStore *PostgresCoffeeStore) Create(requestContext context.Context, coffee *domain.Coffee) error {
+	_ = postgresCoffeeStore
+	_ = requestContext
+	_ = coffee
 	return nil
 }
 
-func (s *PostgresCoffeeStore) GetByID(ctx context.Context, id string) (*domain.Coffee, error) {
+func (postgresCoffeeStore *PostgresCoffeeStore) GetByID(requestContext context.Context, coffeeID string) (*domain.Coffee, error) {
+	_ = postgresCoffeeStore
+	_ = requestContext
+	_ = coffeeID
 	return nil, nil
 }
 
-func (s *PostgresCoffeeStore) List(ctx context.Context, filter domain.ListFilter) ([]domain.Coffee, int, error) {
+func (postgresCoffeeStore *PostgresCoffeeStore) List(requestContext context.Context, filter domain.ListFilter) ([]domain.Coffee, int, error) {
+	_ = postgresCoffeeStore
+	_ = requestContext
+	_ = filter
 	return nil, 0, nil
 }

@@ -2,28 +2,38 @@ package store
 
 import (
 	"context"
-	"coffie/internal/feature/rating/domain"
 	"database/sql"
+
+	"coffie/internal/feature/rating/domain"
 )
 
 // PostgresRatingStore implements domain.RatingStore using PostgreSQL.
 type PostgresRatingStore struct {
-	db *sql.DB
+	databaseConnection *sql.DB
 }
 
 // NewRatingStore creates a new Postgres-backed rating store.
-func NewRatingStore(db *sql.DB) *PostgresRatingStore {
-	return &PostgresRatingStore{db: db}
+func NewRatingStore(databaseConnection *sql.DB) *PostgresRatingStore {
+	return &PostgresRatingStore{databaseConnection: databaseConnection}
 }
 
-func (s *PostgresRatingStore) Create(ctx context.Context, r *domain.Rating) error {
+func (postgresRatingStore *PostgresRatingStore) Create(requestContext context.Context, rating *domain.Rating) error {
+	_ = postgresRatingStore
+	_ = requestContext
+	_ = rating
 	return nil
 }
 
-func (s *PostgresRatingStore) ListByRecipeID(ctx context.Context, recipeID string) ([]domain.Rating, error) {
+func (postgresRatingStore *PostgresRatingStore) ListByRecipeID(requestContext context.Context, recipeID string) ([]domain.Rating, error) {
+	_ = postgresRatingStore
+	_ = requestContext
+	_ = recipeID
 	return nil, nil
 }
 
-func (s *PostgresRatingStore) GetAvgByRecipeID(ctx context.Context, recipeID string) (*float64, int, error) {
+func (postgresRatingStore *PostgresRatingStore) GetAvgByRecipeID(requestContext context.Context, recipeID string) (*float64, int, error) {
+	_ = postgresRatingStore
+	_ = requestContext
+	_ = recipeID
 	return nil, 0, nil
 }

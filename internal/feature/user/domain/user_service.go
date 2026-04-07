@@ -18,16 +18,16 @@ func NewService(userStore UserStore) *Service {
 }
 
 // Register handles user registration.
-func (s *Service) Register(ctx context.Context, req RegisterRequest) (*User, error) {
+func (service *Service) Register(requestContext context.Context, registerRequest RegisterRequest) (*User, error) {
 	user := &User{
 		ID:        uuid.NewString(),
-		Name:      req.Name,
-		Email:     req.Email,
+		Name:      registerRequest.Name,
+		Email:     registerRequest.Email,
 		CreatedAt: time.Now().UTC(),
 	}
 
-	if err := s.userStore.Create(ctx, user); err != nil {
-		return nil, err
+	if createError := service.userStore.Create(requestContext, user); createError != nil {
+		return nil, createError
 	}
 
 	return user, nil

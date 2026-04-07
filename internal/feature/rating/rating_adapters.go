@@ -6,11 +6,13 @@ import (
 )
 
 // ToCreateRatingRequest converts an HTTP request to a domain service request.
-func ToCreateRatingRequest(req *http.CreateRating) domain.CreateRatingRequest {
+func ToCreateRatingRequest(createRatingRequest *http.CreateRating) domain.CreateRatingRequest {
+	_ = createRatingRequest
 	return domain.CreateRatingRequest{}
 }
 
 // ToRatingResponse converts a domain rating to an HTTP response.
-func ToRatingResponse(r *domain.Rating) *http.RatingResponse {
+func ToRatingResponse(rating *domain.Rating) *http.RatingResponse {
+	_ = rating
 	return &http.RatingResponse{}
 }

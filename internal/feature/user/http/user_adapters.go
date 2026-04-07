@@ -2,18 +2,18 @@ package http
 
 import "coffie/internal/feature/user/domain"
 
-func toRegisterRequest(req *RegisterUser) domain.RegisterRequest {
+func toRegisterRequest(registerUserRequest *RegisterUser) domain.RegisterRequest {
 	return domain.RegisterRequest{
-		Name:  req.Name,
-		Email: req.Email,
+		Name:  registerUserRequest.Name,
+		Email: registerUserRequest.Email,
 	}
 }
 
-func toUserResponse(u *domain.User) *UserResponse {
+func toUserResponse(user *domain.User) *UserResponse {
 	return &UserResponse{
-		ID:        u.ID,
-		Name:      u.Name,
-		Email:     u.Email,
-		CreatedAt: u.CreatedAt,
+		ID:        user.ID,
+		Name:      user.Name,
+		Email:     user.Email,
+		CreatedAt: user.CreatedAt,
 	}
 }

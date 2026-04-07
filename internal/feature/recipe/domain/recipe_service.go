@@ -7,11 +7,11 @@ import (
 
 // RecipeStore defines the interface for recipe data persistence.
 type RecipeStore interface {
-	Create(ctx context.Context, r *Recipe) error
-	GetByID(ctx context.Context, id string) (*RecipeWithDetails, error)
-	List(ctx context.Context, filter ListFilter) ([]RecipeSummary, int, error)
-	Update(ctx context.Context, r *Recipe) error
-	Delete(ctx context.Context, id string) error
+	Create(requestContext context.Context, recipe *Recipe) error
+	GetByID(requestContext context.Context, recipeID string) (*RecipeWithDetails, error)
+	List(requestContext context.Context, filter ListFilter) ([]RecipeSummary, int, error)
+	Update(requestContext context.Context, recipe *Recipe) error
+	Delete(requestContext context.Context, recipeID string) error
 }
 
 // ListFilter holds optional filters for listing recipes.
@@ -70,26 +70,41 @@ type ListRecipesRequest struct {
 }
 
 // Create creates a new recipe.
-func (s *Service) Create(ctx context.Context, req CreateRecipeRequest) (*Recipe, error) {
+func (service *Service) Create(requestContext context.Context, createRecipeRequest CreateRecipeRequest) (*Recipe, error) {
+	_ = requestContext
+	_ = createRecipeRequest
 	return nil, nil
 }
 
 // GetByID returns a recipe with full details.
-func (s *Service) GetByID(ctx context.Context, id string) (*RecipeWithDetails, error) {
+func (service *Service) GetByID(requestContext context.Context, recipeID string) (*RecipeWithDetails, error) {
+	_ = service
+	_ = requestContext
+	_ = recipeID
 	return nil, nil
 }
 
 // List searches and lists recipes.
-func (s *Service) List(ctx context.Context, req ListRecipesRequest) ([]RecipeSummary, int, error) {
+func (service *Service) List(requestContext context.Context, listRecipesRequest ListRecipesRequest) ([]RecipeSummary, int, error) {
+	_ = service
+	_ = requestContext
+	_ = listRecipesRequest
 	return nil, 0, nil
 }
 
 // Update updates an existing recipe.
-func (s *Service) Update(ctx context.Context, id string, req UpdateRecipeRequest) (*Recipe, error) {
+func (service *Service) Update(requestContext context.Context, recipeID string, updateRecipeRequest UpdateRecipeRequest) (*Recipe, error) {
+	_ = service
+	_ = requestContext
+	_ = recipeID
+	_ = updateRecipeRequest
 	return nil, nil
 }
 
 // Delete removes a recipe.
-func (s *Service) Delete(ctx context.Context, id string) error {
+func (service *Service) Delete(requestContext context.Context, recipeID string) error {
+	_ = service
+	_ = requestContext
+	_ = recipeID
 	return nil
 }

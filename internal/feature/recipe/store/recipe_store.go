@@ -2,36 +2,52 @@ package store
 
 import (
 	"context"
-	"coffie/internal/feature/recipe/domain"
 	"database/sql"
+
+	"coffie/internal/feature/recipe/domain"
 )
 
 // PostgresRecipeStore implements domain.RecipeStore using PostgreSQL.
 type PostgresRecipeStore struct {
-	db *sql.DB
+	databaseConnection *sql.DB
 }
 
 // NewRecipeStore creates a new Postgres-backed recipe store.
-func NewRecipeStore(db *sql.DB) *PostgresRecipeStore {
-	return &PostgresRecipeStore{db: db}
+func NewRecipeStore(databaseConnection *sql.DB) *PostgresRecipeStore {
+	return &PostgresRecipeStore{databaseConnection: databaseConnection}
 }
 
-func (s *PostgresRecipeStore) Create(ctx context.Context, r *domain.Recipe) error {
+func (postgresRecipeStore *PostgresRecipeStore) Create(requestContext context.Context, recipe *domain.Recipe) error {
+	_ = postgresRecipeStore
+	_ = requestContext
+	_ = recipe
 	return nil
 }
 
-func (s *PostgresRecipeStore) GetByID(ctx context.Context, id string) (*domain.RecipeWithDetails, error) {
+func (postgresRecipeStore *PostgresRecipeStore) GetByID(requestContext context.Context, recipeID string) (*domain.RecipeWithDetails, error) {
+	_ = postgresRecipeStore
+	_ = requestContext
+	_ = recipeID
 	return nil, nil
 }
 
-func (s *PostgresRecipeStore) List(ctx context.Context, filter domain.ListFilter) ([]domain.RecipeSummary, int, error) {
+func (postgresRecipeStore *PostgresRecipeStore) List(requestContext context.Context, filter domain.ListFilter) ([]domain.RecipeSummary, int, error) {
+	_ = postgresRecipeStore
+	_ = requestContext
+	_ = filter
 	return nil, 0, nil
 }
 
-func (s *PostgresRecipeStore) Update(ctx context.Context, r *domain.Recipe) error {
+func (postgresRecipeStore *PostgresRecipeStore) Update(requestContext context.Context, recipe *domain.Recipe) error {
+	_ = postgresRecipeStore
+	_ = requestContext
+	_ = recipe
 	return nil
 }
 
-func (s *PostgresRecipeStore) Delete(ctx context.Context, id string) error {
+func (postgresRecipeStore *PostgresRecipeStore) Delete(requestContext context.Context, recipeID string) error {
+	_ = postgresRecipeStore
+	_ = requestContext
+	_ = recipeID
 	return nil
 }
