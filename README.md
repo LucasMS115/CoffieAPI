@@ -1,6 +1,13 @@
 # Coffie API
 
 REST API for managing coffee recipes, built with Go.
+Docs at http://localhost:8080/swagger/index.html
+
+Run tests
+CoffieAPI: `go test ./... -v`
+
+This is a learning project.
+I'm using it learn a bit about go and claude code!
 
 ---
 
@@ -95,23 +102,5 @@ curl http://localhost:8080/health
 
 ---
 
-## Project Structure
-
-```
-CoffieAPI/
-├── cmd/server/main.go        # Application entry point
-├── internal/
-│   ├── config/               # Environment configuration
-│   ├── database/             # PostgreSQL connection pool
-│   ├── http/                 # HTTP server, middleware, shared responses
-│   └── feature/              # Feature modules (user, coffee, recipe, rating)
-│       └── <feature>/
-│           ├── domain/       # Core entities
-│           ├── store/        # Data persistence (interface + Postgres impl)
-│           ├── service/      # Business logic
-│           └── http/         # Handlers, adapters, request/response structs
-├── migrations/               # Database schema migrations
-└── tests/                    # Integration and unit tests
-```
 
 See `service-structure.md` in the project root for a detailed breakdown of each component.

@@ -9,3 +9,9 @@ type User struct {
 	Email     string
 	CreatedAt time.Time
 }
+
+// RegisterRequest holds validated input for creating a user.
+type RegisterRequest struct {
+	Name  string
+	Email string
+}

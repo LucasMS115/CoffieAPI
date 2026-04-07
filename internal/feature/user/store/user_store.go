@@ -2,8 +2,9 @@ package store
 
 import (
 	"context"
-	"coffie/internal/feature/user/domain"
 	"database/sql"
+
+	"coffie/internal/feature/user/domain"
 )
 
 // PostgresUserStore implements domain.UserStore using PostgreSQL.
@@ -24,12 +25,4 @@ func (s *PostgresUserStore) Create(ctx context.Context, u *domain.User) error {
 	}
 
 	return nil
-}
-
-func (s *PostgresUserStore) GetByID(ctx context.Context, id string) (*domain.User, error) {
-	return nil, nil
-}
-
-func (s *PostgresUserStore) GetStats(ctx context.Context, userID string) (*domain.UserStats, error) {
-	return nil, nil
 }

@@ -8,25 +8,27 @@ import (
 
 // Handler holds the HTTP handlers for recipe endpoints.
 type Handler struct {
-	recipeSvc *domain.Service
+	recipeService *domain.Service
 }
 
 // NewHandler creates a new recipe handler.
-func NewHandler(recipeSvc *domain.Service) *Handler {
-	return &Handler{recipeSvc: recipeSvc}
+func NewHandler(recipeService *domain.Service) *Handler {
+	return &Handler{recipeService: recipeService}
 }
 
 // RegisterRoutes attaches recipe routes to the given ServeMux.
-func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
+func (handler *Handler) RegisterRoutes(serveMux *http.ServeMux) {
 	// POST   /api/recipes
 	// GET    /api/recipes/{id}
 	// GET    /api/recipes
 	// PUT    /api/recipes/{id}
 	// DELETE /api/recipes/{id}
+	_ = handler
+	_ = serveMux
 }
 
-func (h *Handler) Create(w http.ResponseWriter, r *http.Request)  {}
-func (h *Handler) Get(w http.ResponseWriter, r *http.Request)     {}
-func (h *Handler) List(w http.ResponseWriter, r *http.Request)    {}
-func (h *Handler) Update(w http.ResponseWriter, r *http.Request)  {}
-func (h *Handler) Delete(w http.ResponseWriter, r *http.Request)  {}
+func (handler *Handler) Create(responseWriter http.ResponseWriter, request *http.Request) {}
+func (handler *Handler) Get(responseWriter http.ResponseWriter, request *http.Request)    {}
+func (handler *Handler) List(responseWriter http.ResponseWriter, request *http.Request)   {}
+func (handler *Handler) Update(responseWriter http.ResponseWriter, request *http.Request) {}
+func (handler *Handler) Delete(responseWriter http.ResponseWriter, request *http.Request) {}

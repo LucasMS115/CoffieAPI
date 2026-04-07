@@ -7,16 +7,17 @@ import (
 	"net/http"
 	"os"
 
+	_ "coffie/docs"
+
 	_ "github.com/lib/pq"
-	_ "github.com/swaggo/http-swagger" // swagger docs
+	_ "github.com/swaggo/http-swagger"
 
 	apphttp "coffie/internal/http"
-	"coffie/docs"
 )
 
 // @title           Coffee API
 // @version         1.0
-// @description     REST API for managing coffee recipes.
+// @description     REST API for managing the coffie app.
 // @host            localhost:8080
 // @BasePath        /
 // @schemes         http
@@ -36,9 +37,6 @@ func main() {
 		log.Fatalf("failed to open database: %v", err)
 	}
 	defer db.Close()
-
-	// Register the swagger docs
-	_ = docs.SwaggerInfo
 
 	fmt.Printf("connected to database\n")
 

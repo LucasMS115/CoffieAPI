@@ -8,21 +8,23 @@ import (
 
 // Handler holds the HTTP handlers for coffee endpoints.
 type Handler struct {
-	coffeeSvc *domain.Service
+	coffeeService *domain.Service
 }
 
 // NewHandler creates a new coffee handler.
-func NewHandler(coffeeSvc *domain.Service) *Handler {
-	return &Handler{coffeeSvc: coffeeSvc}
+func NewHandler(coffeeService *domain.Service) *Handler {
+	return &Handler{coffeeService: coffeeService}
 }
 
 // RegisterRoutes attaches coffee routes to the given ServeMux.
-func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
+func (handler *Handler) RegisterRoutes(serveMux *http.ServeMux) {
 	// POST /api/coffees
 	// GET  /api/coffees/{id}
 	// GET  /api/coffees
+	_ = handler
+	_ = serveMux
 }
 
-func (h *Handler) Create(w http.ResponseWriter, r *http.Request)  {}
-func (h *Handler) Get(w http.ResponseWriter, r *http.Request)     {}
-func (h *Handler) List(w http.ResponseWriter, r *http.Request)    {}
+func (handler *Handler) Create(responseWriter http.ResponseWriter, request *http.Request) {}
+func (handler *Handler) Get(responseWriter http.ResponseWriter, request *http.Request)    {}
+func (handler *Handler) List(responseWriter http.ResponseWriter, request *http.Request)   {}

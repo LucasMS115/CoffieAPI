@@ -8,19 +8,21 @@ import (
 
 // Handler holds the HTTP handlers for rating endpoints.
 type Handler struct {
-	ratingSvc *domain.Service
+	ratingService *domain.Service
 }
 
 // NewHandler creates a new rating handler.
-func NewHandler(ratingSvc *domain.Service) *Handler {
-	return &Handler{ratingSvc: ratingSvc}
+func NewHandler(ratingService *domain.Service) *Handler {
+	return &Handler{ratingService: ratingService}
 }
 
 // RegisterRoutes attaches rating routes to the given ServeMux.
-func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
+func (handler *Handler) RegisterRoutes(serveMux *http.ServeMux) {
 	// POST   /api/recipes/{id}/ratings
 	// GET    /api/recipes/{id}/ratings
+	_ = handler
+	_ = serveMux
 }
 
-func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {}
-func (h *Handler) List(w http.ResponseWriter, r *http.Request)    {}
+func (handler *Handler) Create(responseWriter http.ResponseWriter, request *http.Request) {}
+func (handler *Handler) List(responseWriter http.ResponseWriter, request *http.Request)   {}

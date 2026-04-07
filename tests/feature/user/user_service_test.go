@@ -8,91 +8,75 @@ import (
 	"coffie/internal/feature/user/domain"
 )
 
-// --- given ---
-type mockUserStore struct {
-	CreateFn   func(ctx context.Context, u *domain.User) error
-	GetByIDFn  func(ctx context.Context, id string) (*domain.User, error)
-	GetStatsFn func(ctx context.Context, userID string) (*domain.UserStats, error)
-}
-
-func (m *mockUserStore) Create(ctx context.Context, u *domain.User) error {
-	return m.CreateFn(ctx, u)
-}
-
-func (m *mockUserStore) GetByID(ctx context.Context, id string) (*domain.User, error) {
-	return m.GetByIDFn(ctx, id)
-}
-
-func (m *mockUserStore) GetStats(ctx context.Context, userID string) (*domain.UserStats, error) {
-	return m.GetStatsFn(ctx, userID)
-}
-
 // --- success: register user ---
-func TestService_Register_Success(t *testing.T) {
+func TestService_Register_Success(testingContext *testing.T) {
 	// given
-	store := &mockUserStore{
-		CreateFn: func(ctx context.Context, u *domain.User) error {
+	mockStore := &mockUserStore{
+		CreateFunction: func(requestContext context.Context, user *domain.User) error {
+			_ = requestContext
 			expected := &domain.User{
 				Name:  "Lucas",
 				Email: "lucas@email.com",
 			}
-			if u.Name != expected.Name {
-				t.Errorf("expected name %q, got %q", expected.Name, u.Name)
+			if user.Name != expected.Name {
+				testingContext.Errorf("expected name %q, got %q", expected.Name, user.Name)
 			}
-			if u.Email != expected.Email {
-				t.Errorf("expected email %q, got %q", expected.Email, u.Email)
+			if user.Email != expected.Email {
+				testingContext.Errorf("expected email %q, got %q", expected.Email, user.Email)
 			}
-			if u.ID == "" {
-				t.Error("expected ID to be generated")
+			if user.ID == "" {
+				testingContext.Error("expected ID to be generated")
 			}
-			if u.CreatedAt.IsZero() {
-				t.Error("expected CreatedAt to be set")
+			if user.CreatedAt.IsZero() {
+				testingContext.Error("expected CreatedAt to be set")
 			}
 			return nil
 		},
 	}
 
-	svc := domain.NewService(store)
-	req := domain.RegisterRequest{
+	userService := domain.NewService(mockStore)
+	registerRequest := domain.RegisterRequest{
 		Name:  "Lucas",
 		Email: "lucas@email.com",
 	}
 
 	// when
-	result, err := svc.Register(context.Background(), req)
+	result, registerError := userService.Register(context.Background(), registerRequest)
 
 	// then
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
+	if registerError != nil {
+		testingContext.Fatalf("expected no error, got: %v", registerError)
 	}
 	if result == nil {
-		t.Fatal("expected result, got nil")
+		testingContext.Fatal("expected result, got nil")
 	}
 }
 
 // --- failure: register user passes through store error ---
-func TestService_Register_Failure_StoreError(t *testing.T) {
+func TestService_Register_Failure_StoreError(testingContext *testing.T) {
 	// given
-	store := &mockUserStore{
-		CreateFn: func(ctx context.Context, u *domain.User) error {
+	mockStore := &mockUserStore{
+		CreateFunction: func(requestContext context.Context, user *domain.User) error {
+			_ = requestContext
+			_ = user
 			return errors.New("db connection refused")
 		},
 	}
 
-	svc := domain.NewService(store)
-	req := domain.RegisterRequest{
+	userService := domain.NewService(mockStore)
+	registerRequest := domain.RegisterRequest{
 		Name:  "Lucas",
 		Email: "lucas@email.com",
 	}
 
 	// when
-	_, err := svc.Register(context.Background(), req)
+	_, registerError := userService.Register(context.Background(), registerRequest)
 
 	// then
-	if err == nil {
-		t.Fatal("expected error, got nil")
+	if registerError == nil {
+		testingContext.Fatal("expected error, got nil")
 	}
-	if err.Error() != "db connection refused" {
-		t.Errorf("expected 'db connection refused', got: %v", err)
+	if registerError.Error() != "db connection refused" {
+		testingContext.Errorf("expected 'db connection refused', got: %v", registerError)
 	}
 }

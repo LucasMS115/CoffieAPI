@@ -22,8 +22,8 @@ func NewServer(addr string, db *sql.DB) *http.Server {
 	healthHandler.RegisterRoutes(mux)
 
 	userStore := store.NewUserStore(db)
-	userSvc := domain.NewService(userStore)
-	userHandler := userhttp.NewHandler(userSvc)
+	userService := domain.NewService(userStore)
+	userHandler := userhttp.NewHandler(userService)
 	userHandler.RegisterRoutes(mux)
 
 	return &http.Server{

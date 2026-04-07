@@ -15,8 +15,8 @@ func NewHealthHandler() *HealthHandler {
 }
 
 // RegisterRoutes attaches the health route to the given ServeMux.
-func (h *HealthHandler) RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("GET /health", h.Get)
+func (handler *HealthHandler) RegisterRoutes(serveMux *http.ServeMux) {
+	serveMux.HandleFunc("GET /health", handler.Get)
 }
 
 // Get godoc
@@ -26,6 +26,7 @@ func (h *HealthHandler) RegisterRoutes(mux *http.ServeMux) {
 // @Produce json
 // @Success 200 {object} map[string]string
 // @Router /health [get]
-func (h *HealthHandler) Get(w http.ResponseWriter, r *http.Request) {
-	response.JSON(w, http.StatusOK, map[string]string{"status": "ok"})
+func (handler *HealthHandler) Get(responseWriter http.ResponseWriter, request *http.Request) {
+	_ = request
+	response.JSON(responseWriter, http.StatusOK, map[string]string{"status": "ok"})
 }

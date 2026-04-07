@@ -13,74 +13,74 @@ import (
 )
 
 // --- given ---
-func setupStore(t *testing.T) (*store.PostgresUserStore, sqlmock.Sqlmock) {
-	t.Helper()
+func setupUserStore(testingContext *testing.T) (*store.PostgresUserStore, sqlmock.Sqlmock) {
+	testingContext.Helper()
 
-	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
-	if err != nil {
-		t.Fatalf("failed to create sqlmock: %v", err)
+	databaseConnection, sqlMock, setupError := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
+	if setupError != nil {
+		testingContext.Fatalf("failed to create sqlmock: %v", setupError)
 	}
 
-	s := store.NewUserStore(db)
-	return s, mock
+	userStore := store.NewUserStore(databaseConnection)
+	return userStore, sqlMock
 }
 
 // --- success: create user ---
-func TestPostgresUserStore_Create_Success(t *testing.T) {
+func TestPostgresUserStore_Create_Success(testingContext *testing.T) {
 	// given
-	s, mock := setupStore(t)
+	userStore, sqlMock := setupUserStore(testingContext)
 
 	const insertSQL = `INSERT INTO users (id, name, email, created_at) VALUES ($1, $2, $3, $4)`
 
-	u := &domain.User{
+	user := &domain.User{
 		ID:        "test-id",
 		Name:      "Lucas",
 		Email:     "lucas@email.com",
 		CreatedAt: time.Date(2026, 4, 5, 10, 0, 0, 0, time.UTC),
 	}
 
-	mock.ExpectExec(insertSQL).
-		WithArgs(u.ID, u.Name, u.Email, u.CreatedAt).
+	sqlMock.ExpectExec(insertSQL).
+		WithArgs(user.ID, user.Name, user.Email, user.CreatedAt).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	// when
-	err := s.Create(context.Background(), u)
+	createError := userStore.Create(context.Background(), user)
 
 	// then
-	if err != nil {
-		t.Errorf("expected no error, got: %v", err)
+	if createError != nil {
+		testingContext.Errorf("expected no error, got: %v", createError)
 	}
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("unmet expectations: %v", err)
+	if expectationsError := sqlMock.ExpectationsWereMet(); expectationsError != nil {
+		testingContext.Errorf("unmet expectations: %v", expectationsError)
 	}
 }
 
 // --- failure: create user returns error on database failure ---
-func TestPostgresUserStore_Create_Failure(t *testing.T) {
+func TestPostgresUserStore_Create_Failure(testingContext *testing.T) {
 	// given
-	s, mock := setupStore(t)
+	userStore, sqlMock := setupUserStore(testingContext)
 
 	const insertSQL = `INSERT INTO users (id, name, email, created_at) VALUES ($1, $2, $3, $4)`
 
-	u := &domain.User{
+	user := &domain.User{
 		ID:        "test-id",
 		Name:      "Lucas",
 		Email:     "lucas@email.com",
 		CreatedAt: time.Date(2026, 4, 5, 10, 0, 0, 0, time.UTC),
 	}
 
-	mock.ExpectExec(insertSQL).
-		WithArgs(u.ID, u.Name, u.Email, u.CreatedAt).
+	sqlMock.ExpectExec(insertSQL).
+		WithArgs(user.ID, user.Name, user.Email, user.CreatedAt).
 		WillReturnError(errors.New("connection refused"))
 
 	// when
-	err := s.Create(context.Background(), u)
+	createError := userStore.Create(context.Background(), user)
 
 	// then
-	if err == nil {
-		t.Error("expected error, got nil")
+	if createError == nil {
+		testingContext.Error("expected error, got nil")
 	}
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("unmet expectations: %v", err)
+	if expectationsError := sqlMock.ExpectationsWereMet(); expectationsError != nil {
+		testingContext.Errorf("unmet expectations: %v", expectationsError)
 	}
 }
