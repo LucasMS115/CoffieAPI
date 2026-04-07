@@ -12,7 +12,7 @@ func TestValidateRegisterUserRequest_ValidRequest(testingContext *testing.T) {
 		Email: "lucas@email.com",
 	}
 
-	validationErrors := userhttp.ValidateRegisterUserRequest(registerRequest)
+	validationErrors := registerRequest.Validate()
 
 	if len(validationErrors) != 0 {
 		testingContext.Fatalf("expected no validation errors, got %d", len(validationErrors))
@@ -24,7 +24,7 @@ func TestValidateRegisterUserRequest_MissingName(testingContext *testing.T) {
 		Email: "lucas@email.com",
 	}
 
-	validationErrors := userhttp.ValidateRegisterUserRequest(registerRequest)
+	validationErrors := registerRequest.Validate()
 
 	if len(validationErrors) != 1 {
 		testingContext.Fatalf("expected 1 validation error, got %d", len(validationErrors))
@@ -42,7 +42,7 @@ func TestValidateRegisterUserRequest_MissingEmail(testingContext *testing.T) {
 		Name: "Lucas",
 	}
 
-	validationErrors := userhttp.ValidateRegisterUserRequest(registerRequest)
+	validationErrors := registerRequest.Validate()
 
 	if len(validationErrors) != 1 {
 		testingContext.Fatalf("expected 1 validation error, got %d", len(validationErrors))
@@ -58,7 +58,7 @@ func TestValidateRegisterUserRequest_MissingEmail(testingContext *testing.T) {
 func TestValidateRegisterUserRequest_MissingNameAndEmail(testingContext *testing.T) {
 	registerRequest := &userhttp.RegisterUser{}
 
-	validationErrors := userhttp.ValidateRegisterUserRequest(registerRequest)
+	validationErrors := registerRequest.Validate()
 
 	if len(validationErrors) != 2 {
 		testingContext.Fatalf("expected 2 validation errors, got %d", len(validationErrors))

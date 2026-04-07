@@ -43,7 +43,7 @@ func (handler *Handler) Register(responseWriter http.ResponseWriter, request *ht
 	}
 
 	// Validate
-	validationErrors := ValidateRegisterUserRequest(&registerRequest)
+	validationErrors := registerRequest.Validate()
 	if len(validationErrors) > 0 {
 		response.Error(responseWriter, http.StatusBadRequest, "INVALID_INPUT", "validation failed", validationErrors)
 		return
