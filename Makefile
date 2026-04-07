@@ -1,4 +1,4 @@
-.PHONY: up down logs test migrate build clean
+.PHONY: up down logs test migrate build clean docs
 
 up:
 	docker compose up --build -d
@@ -17,6 +17,9 @@ migrate:
 
 build:
 	docker compose build
+
+docs:
+	swag init -g cmd/server/main.go -o docs
 
 clean:
 	docker compose down -v

@@ -10,7 +10,6 @@ import (
 	_ "coffie/docs"
 
 	_ "github.com/lib/pq"
-	_ "github.com/swaggo/http-swagger"
 
 	apphttp "coffie/internal/http"
 )

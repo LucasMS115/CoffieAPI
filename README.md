@@ -1,10 +1,10 @@
 # Coffie API
 
 REST API for managing coffee recipes, built with Go.
-Docs at http://localhost:8080/swagger/index.html
 
-Run tests
-CoffieAPI: `go test ./... -v`
+Swagger UI: `http://localhost:8080/swagger/index.html`
+
+Run tests in `CoffieAPI` with `go test ./... -v`.
 
 This is a learning project.
 I'm using it learn a bit about go and claude code!
@@ -45,6 +45,7 @@ The API runs on `http://localhost:8080` with hot-reload via [air](https://github
 | `make logs`     | Follow API logs                    |
 | `make test`     | Run tests inside container         |
 | `make build`    | Rebuild the API image              |
+| `make docs`     | Regenerate Swagger docs            |
 | `make clean`    | Stop everything and remove volumes |
 
 ---
@@ -84,6 +85,28 @@ go run ./cmd/server/main.go
 ```
 
 The server starts on `http://localhost:8080`.
+
+### Swagger docs
+
+Swagger is generated from:
+
+- API metadata annotations in `cmd/server/main.go`
+- endpoint annotations in the HTTP handlers under `internal/feature/**/http`
+
+The generated artifacts live in `docs/` and should not be edited manually.
+
+To regenerate them:
+
+```bash
+go install github.com/swaggo/swag/cmd/swag@latest
+make docs
+```
+
+Or run the command directly:
+
+```bash
+swag init -g cmd/server/main.go -o docs
+```
 
 ---
 
