@@ -4,9 +4,7 @@ import (
 	"database/sql"
 	"net/http"
 
-	userdomain "coffie/internal/feature/user/domain"
-	userhttp "coffie/internal/feature/user/http"
-	userstore "coffie/internal/feature/user/store"
+	userfeature "coffie/internal/feature/user"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 )
@@ -21,8 +19,6 @@ func registerHealthModule(serveMux *http.ServeMux) {
 }
 
 func registerUserModule(serveMux *http.ServeMux, databaseConnection *sql.DB) {
-	userStore := userstore.NewUserStore(databaseConnection)
-	userService := userdomain.NewService(userStore)
-	userHandler := userhttp.NewHandler(userService)
-	userHandler.RegisterRoutes(serveMux)
+	userModule := userfeature.NewModule(databaseConnection)
+	userModule.RegisterRoutes(serveMux)
 }

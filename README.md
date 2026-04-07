@@ -4,7 +4,7 @@ REST API for managing coffee recipes, built with Go.
 
 Swagger UI: `http://localhost:8080/swagger/index.html`
 
-Run tests in `CoffieAPI` with `go test ./... -v`.
+Run tests in `CoffieAPI` with `go test ./... -v` or `go test ./tests/feature/user -v` for a specific feature.
 
 This is a learning project.
 I'm using it learn a bit about go and claude code!
@@ -44,7 +44,11 @@ The API runs on `http://localhost:8080` with hot-reload via [air](https://github
 | `make down`     | Stop all services                  |
 | `make logs`     | Follow API logs                    |
 | `make test`     | Run tests inside container         |
+| `make test-unit`| Run unit/feature tests locally     |
+| `make test-integration` | Run integration tests locally |
+| `make verify`   | Run the full local Go test suite   |
 | `make build`    | Rebuild the API image              |
+| `make run`      | Run the API locally without Docker |
 | `make docs`     | Regenerate Swagger docs            |
 | `make clean`    | Stop everything and remove volumes |
 

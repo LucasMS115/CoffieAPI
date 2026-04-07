@@ -1,16 +1,16 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	_ "coffie/docs"
 
 	_ "github.com/lib/pq"
 
+	"coffie/internal/config"
+	"coffie/internal/database"
 	apphttp "coffie/internal/http"
 )
 
@@ -21,17 +21,12 @@ import (
 // @BasePath        /
 // @schemes         http
 func main() {
-	port := os.Getenv("API_PORT")
-	if port == "" {
-		port = "8080"
+	applicationConfig, loadConfigError := config.Load()
+	if loadConfigError != nil {
+		log.Fatalf("failed to load configuration: %v", loadConfigError)
 	}
 
-	databaseURL := os.Getenv("DATABASE_URL")
-	if databaseURL == "" {
-		databaseURL = "postgres://coffie:coffie_pass@localhost:5432/coffie_dev?sslmode=disable"
-	}
-
-	databaseConnection, openDatabaseError := openDatabase(databaseURL)
+	databaseConnection, openDatabaseError := database.NewPostgresConn(applicationConfig.DatabaseURL)
 	if openDatabaseError != nil {
 		log.Fatalf("failed to open database: %v", openDatabaseError)
 	}
@@ -39,21 +34,10 @@ func main() {
 
 	fmt.Printf("connected to database\n")
 
-	server := apphttp.NewServer(":"+port, databaseConnection)
+	server := apphttp.NewServer(":"+applicationConfig.APIPort, databaseConnection)
 
-	fmt.Printf("server starting on port %s\n", port)
+	fmt.Printf("server starting on port %s\n", applicationConfig.APIPort)
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
-}
-
-func openDatabase(dataSourceName string) (*sql.DB, error) {
-	databaseConnection, openError := sql.Open("postgres", dataSourceName)
-	if openError != nil {
-		return nil, openError
-	}
-	if pingError := databaseConnection.Ping(); pingError != nil {
-		return nil, pingError
-	}
-	return databaseConnection, nil
 }

@@ -4,17 +4,16 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"coffie/internal/feature/user/domain"
 	"coffie/internal/http/response"
 )
 
 // Handler holds the HTTP handlers for user endpoints.
 type Handler struct {
-	userService *domain.Service
+	userService UserService
 }
 
 // NewHandler creates a new user handler.
-func NewHandler(userService *domain.Service) *Handler {
+func NewHandler(userService UserService) *Handler {
 	return &Handler{userService: userService}
 }
 
@@ -55,7 +54,7 @@ func (handler *Handler) Register(responseWriter http.ResponseWriter, request *ht
 	// Delegate to service
 	createdUser, registerError := handler.userService.Register(request.Context(), serviceRequest)
 	if registerError != nil {
-		response.Error(responseWriter, http.StatusInternalServerError, "INTERNAL_ERROR", "could not create user", nil)
+		response.DomainError(responseWriter, registerError)
 		return
 	}
 
