@@ -1,5 +1,5 @@
 [build]
-cmd = "go build -o ./tmp/main ./cmd/server/main.go"
-bin = "./tmp/main"
+cmd = "mkdir -p /tmp/air && go build -o /tmp/air/main ./cmd/server/main.go"
+bin = "/tmp/air/main"
 include_ext = ["go"]
 exclude_dir = ["vendor", "tmp", "tests"]

@@ -4,6 +4,11 @@ vendor/
 .vscode/
 *.swp
 *.swo
+tmp/
+main.exe
+*.exe
+coverage.out
+*.test
 .env
 .env.*
 !env.example

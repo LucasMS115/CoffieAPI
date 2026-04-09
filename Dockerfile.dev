@@ -1,0 +1,26 @@
+FROM golang:1.26-alpine
+
+ARG AIR_VERSION=v1.61.7
+
+RUN apk add --no-cache git \
+    && addgroup -S appgroup \
+    && adduser -S -G appgroup -h /home/appuser appuser \
+    && mkdir -p /app /go/pkg/mod /tmp/go-build /home/appuser \
+    && chown -R appuser:appgroup /app /go/pkg/mod /tmp/go-build /home/appuser
+
+RUN go install github.com/air-verse/air@${AIR_VERSION}
+
+WORKDIR /app
+
+COPY go.mod go.sum .air.toml ./
+RUN go mod download
+
+ENV GOMODCACHE=/go/pkg/mod
+ENV GOCACHE=/tmp/go-build
+ENV HOME=/home/appuser
+
+USER appuser
+
+EXPOSE 8080
+
+CMD ["air", "-c", ".air.toml"]

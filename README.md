@@ -21,8 +21,6 @@ I'm using it learn a bit about go and claude code!
 
 ## Running with Docker (recommended)
 
-The easiest way to run the project. Starts both the API and PostgreSQL automatically.
-
 ```bash
 # Start all services (API + PostgreSQL) in the background
 docker compose up -d
@@ -34,23 +32,79 @@ docker compose logs -f api
 docker compose down
 ```
 
+The default Docker workflow is development-oriented.
+
+- `docker compose up` uses `Dockerfile.dev`
+- the API runs with hot-reload via [air](https://github.com/air-verse/air)
+- the source tree is bind-mounted into the container
+- Go module and build caches are persisted in named Docker volumes for faster rebuilds
+- PostgreSQL is health-checked before the API starts
+
+This starts both the API and PostgreSQL automatically.
+
+
 The API runs on `http://localhost:8080` with hot-reload via [air](https://github.com/air-verse/air) — edit a `.go` file and the server restarts automatically.
+
+PostgreSQL is no longer exposed to the host by default. If you want to connect to it from your host machine with a SQL client, use:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.db-port.yml up -d
+```
+
+To verify the running stack quickly:
+
+```bash
+make smoke
+```
 
 **Available `make` commands** (works on Linux/macOS; on Windows use `docker compose` directly):
 
-| Command         | Description                        |
-|-----------------|------------------------------------|
-| `make up`       | Start all services                 |
-| `make down`     | Stop all services                  |
-| `make logs`     | Follow API logs                    |
-| `make test`     | Run tests inside container         |
-| `make test-unit`| Run unit/feature tests locally     |
-| `make test-integration` | Run integration tests locally |
-| `make verify`   | Run the full local Go test suite   |
-| `make build`    | Rebuild the API image              |
-| `make run`      | Run the API locally without Docker |
-| `make docs`     | Regenerate Swagger docs            |
-| `make clean`    | Stop everything and remove volumes |
+| Command | Description |
+|-------------------|------------------------------------------|
+| `make up` | Start the dev stack |
+| `make up-db-exposed` | Start the dev stack with Postgres exposed on the host |
+| `make smoke` | Call the health endpoint on the running stack |
+| `make smoke-db-exposed` | Start the DB-exposed dev stack and call the health endpoint |
+| `make down` | Stop all services |
+| `make logs` | Follow API logs |
+| `make test` | Run tests inside the dev container |
+| `make test-unit` | Run unit/feature tests locally |
+| `make test-integration` | Run health/integration tests locally |
+| `make verify` | Run the full local Go test suite |
+| `make build` | Build the dev image used by Compose |
+| `make build-runtime` | Build the standalone runtime image |
+| `make run` | Run the API locally without Docker |
+| `make docs` | Regenerate Swagger docs |
+| `make clean` | Stop everything and remove volumes |
+
+### Building the standalone runtime image
+
+The root `Dockerfile` now builds a self-contained runtime image:
+
+- multi-stage build
+- no source bind mount required
+- runs as a non-root user
+
+Build it with:
+
+```bash
+docker build -t coffie-api .
+```
+
+Or via Make:
+
+```bash
+make build-runtime
+```
+
+Run it with your own `DATABASE_URL` and `API_PORT` values:
+
+```bash
+docker run --rm -p 8080:8080 \
+	-e DATABASE_URL="postgres://coffie:coffie_pass@host.docker.internal:5432/coffie_dev?sslmode=disable" \
+	-e API_PORT="8080" \
+	coffie-api
+```
 
 ---
 

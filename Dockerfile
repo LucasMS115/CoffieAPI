@@ -1,15 +1,28 @@
-FROM golang:1.26-alpine
+FROM golang:1.26-alpine AS builder
 
-RUN apk add --no-cache git
+RUN apk add --no-cache ca-certificates git
 
-# Install air for hot-reload
-RUN go install github.com/air-verse/air@latest
+WORKDIR /src
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o /out/coffie-api ./cmd/server/main.go
+
+FROM alpine:3.22
+
+RUN apk add --no-cache ca-certificates \
+	&& addgroup -S appgroup \
+	&& adduser -S -G appgroup -h /home/appuser appuser
 
 WORKDIR /app
 
-COPY go.mod ./
-RUN if [ -f go.sum ]; then go mod download; fi
+COPY --from=builder /out/coffie-api /app/coffie-api
+
+USER appuser
 
 EXPOSE 8080
 
-CMD ["air", "-c", ".air.toml"]
+CMD ["/app/coffie-api"]
