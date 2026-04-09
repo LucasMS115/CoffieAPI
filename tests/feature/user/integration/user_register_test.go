@@ -1,4 +1,4 @@
-package user
+package integration
 
 import (
 	"context"
@@ -17,9 +17,7 @@ import (
 
 var registerUserCreatedAt = time.Date(2026, 4, 9, 13, 0, 0, 0, time.UTC)
 
-// --- success: POST /api/users ---
 func TestRegisterUser_Success(testingContext *testing.T) {
-	// given
 	userService := &mockUserService{
 		RegisterFunction: func(requestContext context.Context, registerRequest domain.RegisterRequest) (*domain.User, error) {
 			_ = requestContext
@@ -47,10 +45,8 @@ func TestRegisterUser_Success(testingContext *testing.T) {
 	request.Header.Set("Content-Type", "application/json")
 	responseRecorder := httptest.NewRecorder()
 
-	// when
 	serveMux.ServeHTTP(responseRecorder, request)
 
-	// then
 	assertRegisterUserResponse(testingContext, responseRecorder, http.StatusCreated, userhttp.UserResponse{
 		ID:        "generated-id",
 		Name:      "Lucas",
@@ -59,9 +55,7 @@ func TestRegisterUser_Success(testingContext *testing.T) {
 	})
 }
 
-// --- failure: POST /api/users with invalid JSON ---
 func TestRegisterUser_InvalidJSON(testingContext *testing.T) {
-	// given
 	serviceCalled := false
 	serveMux := newUserServeMux(&mockUserService{
 		RegisterFunction: func(requestContext context.Context, registerRequest domain.RegisterRequest) (*domain.User, error) {
@@ -76,10 +70,8 @@ func TestRegisterUser_InvalidJSON(testingContext *testing.T) {
 	request.Header.Set("Content-Type", "application/json")
 	responseRecorder := httptest.NewRecorder()
 
-	// when
 	serveMux.ServeHTTP(responseRecorder, request)
 
-	// then
 	if serviceCalled {
 		testingContext.Fatal("expected service not to be called")
 	}
@@ -89,9 +81,7 @@ func TestRegisterUser_InvalidJSON(testingContext *testing.T) {
 	})
 }
 
-// --- failure: POST /api/users with validation errors ---
 func TestRegisterUser_ValidationFailure(testingContext *testing.T) {
-	// given
 	serviceCalled := false
 	serveMux := newUserServeMux(&mockUserService{
 		RegisterFunction: func(requestContext context.Context, registerRequest domain.RegisterRequest) (*domain.User, error) {
@@ -106,10 +96,8 @@ func TestRegisterUser_ValidationFailure(testingContext *testing.T) {
 	request.Header.Set("Content-Type", "application/json")
 	responseRecorder := httptest.NewRecorder()
 
-	// when
 	serveMux.ServeHTTP(responseRecorder, request)
 
-	// then
 	if serviceCalled {
 		testingContext.Fatal("expected service not to be called")
 	}
@@ -122,9 +110,7 @@ func TestRegisterUser_ValidationFailure(testingContext *testing.T) {
 	})
 }
 
-// --- failure: POST /api/users returns mapped domain error ---
 func TestRegisterUser_ServiceError(testingContext *testing.T) {
-	// given
 	serveMux := newUserServeMux(&mockUserService{
 		RegisterFunction: func(requestContext context.Context, registerRequest domain.RegisterRequest) (*domain.User, error) {
 			_ = requestContext
@@ -137,14 +123,30 @@ func TestRegisterUser_ServiceError(testingContext *testing.T) {
 	request.Header.Set("Content-Type", "application/json")
 	responseRecorder := httptest.NewRecorder()
 
-	// when
 	serveMux.ServeHTTP(responseRecorder, request)
 
-	// then
 	assertRegisterErrorResponse(testingContext, responseRecorder, http.StatusConflict, response.ErrorResponse{
 		ErrorCode: "CONFLICT",
 		Message:   "user already exists",
 	})
+}
+
+type mockUserService struct {
+	RegisterFunction func(requestContext context.Context, registerRequest domain.RegisterRequest) (*domain.User, error)
+}
+
+func (mockService *mockUserService) Register(requestContext context.Context, registerRequest domain.RegisterRequest) (*domain.User, error) {
+	if mockService.RegisterFunction == nil {
+		return nil, nil
+	}
+	return mockService.RegisterFunction(requestContext, registerRequest)
+}
+
+func newUserServeMux(userService userhttp.UserService) *http.ServeMux {
+	userHandler := userhttp.NewHandler(userService)
+	serveMux := http.NewServeMux()
+	userHandler.RegisterRoutes(serveMux)
+	return serveMux
 }
 
 func assertRegisterErrorResponse(testingContext *testing.T, responseRecorder *httptest.ResponseRecorder, expectedStatus int, expectedResponse response.ErrorResponse) {
