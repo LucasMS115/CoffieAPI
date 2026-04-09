@@ -20,6 +20,9 @@ func setupUserStore(testingContext *testing.T) (*store.PostgresUserStore, sqlmoc
 	if setupError != nil {
 		testingContext.Fatalf("failed to create sqlmock: %v", setupError)
 	}
+	testingContext.Cleanup(func() {
+		_ = databaseConnection.Close()
+	})
 
 	userStore := store.NewUserStore(databaseConnection)
 	return userStore, sqlMock

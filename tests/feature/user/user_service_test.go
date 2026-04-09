@@ -11,33 +11,20 @@ import (
 // --- success: register user ---
 func TestService_Register_Success(testingContext *testing.T) {
 	// given
+	expectedName := "Lucas"
+	expectedEmail := "lucas@email.com"
 	mockStore := &mockUserStore{
 		CreateFunction: func(requestContext context.Context, user *domain.User) error {
 			_ = requestContext
-			expected := &domain.User{
-				Name:  "Lucas",
-				Email: "lucas@email.com",
-			}
-			if user.Name != expected.Name {
-				testingContext.Errorf("expected name %q, got %q", expected.Name, user.Name)
-			}
-			if user.Email != expected.Email {
-				testingContext.Errorf("expected email %q, got %q", expected.Email, user.Email)
-			}
-			if user.ID == "" {
-				testingContext.Error("expected ID to be generated")
-			}
-			if user.CreatedAt.IsZero() {
-				testingContext.Error("expected CreatedAt to be set")
-			}
+			assertRegisteredUser(testingContext, user, expectedName, expectedEmail)
 			return nil
 		},
 	}
 
 	userService := domain.NewService(mockStore)
 	registerRequest := domain.RegisterRequest{
-		Name:  "Lucas",
-		Email: "lucas@email.com",
+		Name:  expectedName,
+		Email: expectedEmail,
 	}
 
 	// when
@@ -50,16 +37,18 @@ func TestService_Register_Success(testingContext *testing.T) {
 	if result == nil {
 		testingContext.Fatal("expected result, got nil")
 	}
+	assertRegisteredUser(testingContext, result, expectedName, expectedEmail)
 }
 
 // --- failure: register user passes through store error ---
 func TestService_Register_Failure_StoreError(testingContext *testing.T) {
 	// given
+	expectedError := errors.New("db connection refused")
 	mockStore := &mockUserStore{
 		CreateFunction: func(requestContext context.Context, user *domain.User) error {
 			_ = requestContext
 			_ = user
-			return errors.New("db connection refused")
+			return expectedError
 		},
 	}
 
@@ -76,7 +65,27 @@ func TestService_Register_Failure_StoreError(testingContext *testing.T) {
 	if registerError == nil {
 		testingContext.Fatal("expected error, got nil")
 	}
-	if registerError.Error() != "db connection refused" {
-		testingContext.Errorf("expected 'db connection refused', got: %v", registerError)
+	if !errors.Is(registerError, expectedError) {
+		testingContext.Errorf("expected propagated error %v, got: %v", expectedError, registerError)
+	}
+}
+
+func assertRegisteredUser(testingContext *testing.T, user *domain.User, expectedName string, expectedEmail string) {
+	testingContext.Helper()
+
+	if user == nil {
+		testingContext.Fatal("expected user, got nil")
+	}
+	if user.Name != expectedName {
+		testingContext.Errorf("expected name %q, got %q", expectedName, user.Name)
+	}
+	if user.Email != expectedEmail {
+		testingContext.Errorf("expected email %q, got %q", expectedEmail, user.Email)
+	}
+	if user.ID == "" {
+		testingContext.Error("expected ID to be generated")
+	}
+	if user.CreatedAt.IsZero() {
+		testingContext.Error("expected CreatedAt to be set")
 	}
 }
